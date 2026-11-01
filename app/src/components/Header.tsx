@@ -1,13 +1,26 @@
 import { Menu, Package, Search, ShoppingCart, User } from "lucide-react";
-import type { NavItem } from "../types";
+
+type NavItem = {
+  label: string;
+};
 
 type HeaderProps = {
   brand: string;
   navItems: NavItem[];
   cartCount: number;
+  selectedTag: string;
+  onTagChange: (tag: string) => void;
+  onCartClick: () => void;
 };
 
-const Header = ({ brand, navItems, cartCount }: HeaderProps) => {
+const Header = ({
+  brand,
+  navItems,
+  cartCount,
+  selectedTag,
+  onTagChange,
+  onCartClick,
+}: HeaderProps) => {
   return (
     <header className="sticky top-0 z-40 border-b border-blue-700/30 bg-blue-600 shadow-lg shadow-blue-900/10">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -26,13 +39,19 @@ const Header = ({ brand, navItems, cartCount }: HeaderProps) => {
 
           <nav className="hidden items-center gap-8 text-sm font-bold text-blue-100 md:flex">
             {navItems.map((item) => (
-              <a
+              <button
                 key={item.label}
-                href={item.href}
-                className="transition-colors duration-200 hover:text-white"
+                type="button"
+                onClick={() => onTagChange(item.label)}
+                aria-current={selectedTag === item.label ? "page" : undefined}
+                className={`relative transition-colors duration-200 ${
+                  selectedTag === item.label
+                    ? "text-white underline underline-offset-4"
+                    : "hover:text-white"
+                }`}
               >
                 {item.label}
-              </a>
+              </button>
             ))}
           </nav>
 
@@ -63,6 +82,7 @@ const Header = ({ brand, navItems, cartCount }: HeaderProps) => {
 
             <button
               type="button"
+              onClick={onCartClick}
               className="relative inline-flex h-10 w-10 items-center justify-center rounded-[0.75rem] border border-blue-400/20 bg-blue-500/30 text-blue-50 transition-all duration-200 hover:bg-blue-500/50 hover:text-white"
               aria-label="Cart"
             >
