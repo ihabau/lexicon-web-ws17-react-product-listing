@@ -8,7 +8,26 @@ Build a React app that recreates the layout in [`index.html`](index.html).
 | :--- | :---------- |
 | `React_Workshop1.md` | The workshop assignment and submission checklist |
 | `ReactJS_Presentation.md` | The ReactJS lesson presentation |
+| `React_Hooks_Offline.md` | Offline reading guide for `useContext` and `useReducer` |
 | `index.html` | The visual reference for the product listing page |
+
+## Branches
+
+| Branch | Contents |
+| :----- | :------- |
+| `main` | Workshop 1 solution built with components and props |
+| `hooks` | Runnable `useContext` and `useReducer` demos in `hooks-demo/`, plus the reading guide |
+
+Switch to the hooks branch to run the demos:
+
+```bash
+git checkout hooks
+cd hooks-demo
+npm install
+npm run dev
+```
+
+Open `/?demo=context` for the theme demo and `/?demo=reducer` for the event manager demo.
 
 ## Requirements
 
@@ -19,3 +38,4 @@ Build a React app that recreates the layout in [`index.html`](index.html).
 - A clean project structure
 
 See `React_Workshop1.md` for the full task and checklist.
+See `React_Hooks_Offline.md` for the hooks reading practice.
