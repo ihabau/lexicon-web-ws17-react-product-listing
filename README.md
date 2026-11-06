@@ -16,20 +16,44 @@ Build a React app that recreates the layout in [`index.html`](index.html).
 | Branch | Contents |
 | :----- | :------- |
 | `main` | Workshop 1 solution built with components and props |
-| `hooks` | Product site refactored to `useContext`, `useReducer`, and `useMemo`, with a visible light/dark theme hook and runnable demos in `hooks-demo/` |
+| `hooks` | Product site refactored to hooks, with a light/dark theme toggle and runnable demos in `hooks-demo/` |
 
-Switch to the hooks branch to run the demos:
+### `main` branch
+
+The original Workshop 1 solution. The shop state is passed down through props.
+
+### `hooks` branch
+
+The same product listing, refactored so shared state lives in hooks instead of props:
+
+- [x] `useReducer` owns the filters, sort order, page, cart, and drawer state.
+- [x] `useContext` shares the reducer state and `dispatch` through `ShopContext`.
+- [x] `useMemo` caches the cart count, cart total, filtered products, sorted products, and visible page.
+- [x] `useState` keeps the newsletter form state local.
+- [x] `useEffect` applies and stores the selected theme.
+- [x] `useShop` is a guarded custom hook for reading `ShopContext`.
+- [x] `useTheme` is the visual custom hook behind the light/dark toggle.
+
+The full hook checklist, state model, and component breakdown are in [`app/README.md`](app/README.md).
+
+Switch to the hooks branch to run the shop:
 
 ```bash
 git checkout hooks
+cd app
+npm install
+npm run dev
+```
+
+The hook demos are a separate app:
+
+```bash
 cd hooks-demo
 npm install
 npm run dev
 ```
 
 Open `/?demo=context` for the theme demo and `/?demo=reducer` for the event manager demo.
-
-The shop app on this branch is documented in [`app/README.md`](app/README.md).
 
 ## Requirements
 
