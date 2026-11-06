@@ -8,7 +8,7 @@ import { ShopProvider } from "./context/ShopProvider.tsx";
 
 function ShopPage() {
   return (
-    <div className="min-h-screen bg-slate-100/30 font-sans text-slate-950 antialiased">
+    <div className="min-h-screen bg-slate-100/30 font-sans text-slate-950 antialiased transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100">
       <Header />
 
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">

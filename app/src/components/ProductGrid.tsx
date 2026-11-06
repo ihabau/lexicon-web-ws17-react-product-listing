@@ -158,20 +158,20 @@ const ProductGrid = () => {
 
   return (
     <section className="lg:col-span-9">
-      <div className="border border-slate-200 rounded-[1.25rem] bg-slate-50/50 backdrop-blur-sm shadow-sm transition-all duration-300 hover:shadow-xl hover:border-blue-400 p-5">
+      <div className="border border-slate-200 rounded-[1.25rem] bg-slate-50/50 backdrop-blur-sm shadow-sm transition-all duration-300 hover:shadow-xl hover:border-blue-400 p-5 dark:border-slate-800 dark:bg-slate-900/60 dark:hover:border-blue-500">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
             Recommended for you
           </h1>
 
-          <label className="inline-flex items-center gap-2 text-sm text-slate-600">
+          <label className="inline-flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
             <span className="hidden sm:inline">Sort by:</span>
             <select
               value={sortBy}
               onChange={(event) =>
                 handleSortChange(event.target.value as SortBy)
               }
-              className="appearance-none border border-slate-200 bg-white rounded-[0.75rem] py-2 pl-3 pr-9 text-sm text-slate-950 transition-all duration-200 outline-none cursor-pointer focus:border-blue-400 focus:ring-4 focus:ring-blue-600/10"
+              className="appearance-none border border-slate-200 bg-white rounded-[0.75rem] py-2 pl-3 pr-9 text-sm text-slate-950 transition-all duration-200 outline-none cursor-pointer focus:border-blue-400 focus:ring-4 focus:ring-blue-600/10 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:border-blue-500"
             >
               <option>Newest</option>
               <option>Price: Low to High</option>
@@ -181,7 +181,7 @@ const ProductGrid = () => {
           </label>
         </div>
 
-        <div className="mt-5 h-px bg-slate-100"></div>
+        <div className="mt-5 h-px bg-slate-100 dark:bg-slate-800"></div>
 
         {visibleProducts.length > 0 ? (
           <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -194,7 +194,7 @@ const ProductGrid = () => {
             ))}
           </div>
         ) : (
-          <p className="mt-10 mb-6 text-center text-sm text-slate-500">
+          <p className="mt-10 mb-6 text-center text-sm text-slate-500 dark:text-slate-400">
             No products match these filters.
           </p>
         )}

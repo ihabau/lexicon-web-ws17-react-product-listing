@@ -1,5 +1,14 @@
-import { Menu, Package, Search, ShoppingCart, User } from "lucide-react";
+import {
+  Menu,
+  Moon,
+  Package,
+  Search,
+  ShoppingCart,
+  Sun,
+  User,
+} from "lucide-react";
 import { useShop } from "../hooks/useShop.ts";
+import { useTheme } from "../hooks/useTheme.ts";
 
 const navItems = [
   { label: "New Arrival" },
@@ -10,6 +19,7 @@ const navItems = [
 
 const Header = () => {
   const { state, dispatch, cartCount } = useShop();
+  const { theme, toggleTheme } = useTheme();
   const { selectedTag } = state;
 
   const handleTagChange = (tag: string) => {
@@ -21,14 +31,14 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-blue-700/30 bg-blue-600 shadow-lg shadow-blue-900/10">
+    <header className="sticky top-0 z-40 border-b border-blue-700/30 bg-blue-600 shadow-lg shadow-blue-900/10 dark:border-slate-800 dark:bg-slate-950 dark:shadow-black/30">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <a
             href="#"
-            className="flex items-center gap-2 font-bold tracking-tight text-white"
+            className="flex items-center gap-2 font-bold tracking-tight text-white dark:text-slate-100"
           >
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white text-blue-600 shadow-md">
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white text-blue-600 shadow-md dark:bg-slate-800 dark:text-blue-400">
               <Package size={20} strokeWidth={2.5} />
             </span>
             <span className="text-xl font-black uppercase tracking-tighter">
@@ -36,7 +46,7 @@ const Header = () => {
             </span>
           </a>
 
-          <nav className="hidden items-center gap-8 text-sm font-bold text-blue-100 md:flex">
+          <nav className="hidden items-center gap-8 text-sm font-bold text-blue-100 md:flex dark:text-slate-400">
             {navItems.map((item) => (
               <button
                 key={item.label}
@@ -55,7 +65,7 @@ const Header = () => {
           </nav>
 
           <div className="flex items-center gap-2">
-            <div className="mr-4 hidden items-center gap-2 rounded-full border border-blue-400/20 bg-blue-500/30 px-3 py-1 lg:flex">
+            <div className="mr-4 hidden items-center gap-2 rounded-full border border-blue-400/20 bg-blue-500/30 px-3 py-1 lg:flex dark:border-slate-700 dark:bg-slate-800">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-200 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-100" />
@@ -70,19 +80,29 @@ const Header = () => {
                 id="search-input"
                 type="text"
                 placeholder="Search products..."
-                className="h-10 w-48 rounded-[0.75rem] border border-blue-400/20 bg-blue-500/30 pl-10 pr-4 text-xs font-medium text-blue-50 outline-none transition-all duration-300 placeholder:text-blue-200/50 focus:w-64 focus:bg-blue-500/50"
+                className="h-10 w-48 rounded-[0.75rem] border border-blue-400/20 bg-blue-500/30 pl-10 pr-4 text-xs font-medium text-blue-50 outline-none transition-all duration-300 placeholder:text-blue-200/50 focus:w-64 focus:bg-blue-500/50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-900"
               />
               <Search
                 size={16}
                 strokeWidth={2.5}
-                className="absolute left-3.5 top-3 text-blue-200"
+                className="absolute left-3.5 top-3 text-blue-200 dark:text-slate-400"
               />
             </div>
 
             <button
               type="button"
+              onClick={toggleTheme}
+              aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+              title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-[0.75rem] border border-blue-400/20 bg-blue-500/30 text-blue-50 transition-all duration-200 hover:bg-blue-500/50 hover:text-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+            >
+              {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
+
+            <button
+              type="button"
               onClick={handleCartClick}
-              className="relative inline-flex h-10 w-10 items-center justify-center rounded-[0.75rem] border border-blue-400/20 bg-blue-500/30 text-blue-50 transition-all duration-200 hover:bg-blue-500/50 hover:text-white"
+              className="relative inline-flex h-10 w-10 items-center justify-center rounded-[0.75rem] border border-blue-400/20 bg-blue-500/30 text-blue-50 transition-all duration-200 hover:bg-blue-500/50 hover:text-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
               aria-label="Cart"
             >
               <ShoppingCart size={20} />
@@ -95,7 +115,7 @@ const Header = () => {
 
             <button
               type="button"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-[0.75rem] border border-blue-400/20 bg-blue-500/30 text-blue-50 transition-all duration-200 hover:bg-blue-500/50 hover:text-white"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-[0.75rem] border border-blue-400/20 bg-blue-500/30 text-blue-50 transition-all duration-200 hover:bg-blue-500/50 hover:text-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
               aria-label="Account"
             >
               <User size={20} />
@@ -103,7 +123,7 @@ const Header = () => {
 
             <button
               type="button"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-[0.75rem] border border-blue-400/20 bg-blue-500/30 text-blue-50 transition-all duration-200 hover:bg-blue-500/50 hover:text-white md:hidden"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-[0.75rem] border border-blue-400/20 bg-blue-500/30 text-blue-50 transition-all duration-200 hover:bg-blue-500/50 hover:text-white md:hidden dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
               aria-label="Menu"
             >
               <Menu size={24} strokeWidth={2.5} />
