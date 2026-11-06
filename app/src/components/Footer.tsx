@@ -1,15 +1,18 @@
 import { AtSign, Camera, Package } from "lucide-react";
+import { useShop } from "../hooks/useShop.ts";
 
 const year = new Date().getFullYear();
 
 const shopTags = ["New Arrival", "Men", "Women", "Sale"];
 
-type FooterProps = {
-  selectedTag: string;
-  onTagChange: (tag: string) => void;
-};
+const Footer = () => {
+  const { state, dispatch } = useShop();
+  const { selectedTag } = state;
 
-const Footer = ({ selectedTag, onTagChange }: FooterProps) => {
+  const handleTagChange = (tag: string) => {
+    dispatch({ type: "TOGGLE_TAG", payload: tag });
+  };
+
   return (
     <footer className="bg-white pt-20 pb-10 border-t border-slate-200">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -59,7 +62,7 @@ const Footer = ({ selectedTag, onTagChange }: FooterProps) => {
                 <li key={tag}>
                   <button
                     type="button"
-                    onClick={() => onTagChange(tag)}
+                    onClick={() => handleTagChange(tag)}
                     aria-current={selectedTag === tag ? "page" : undefined}
                     className={`transition-colors hover:text-blue-600 ${
                       selectedTag === tag

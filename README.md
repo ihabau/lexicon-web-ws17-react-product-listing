@@ -16,7 +16,7 @@ Build a React app that recreates the layout in [`index.html`](index.html).
 | Branch | Contents |
 | :----- | :------- |
 | `main` | Workshop 1 solution built with components and props |
-| `hooks` | Runnable `useContext` and `useReducer` demos in `hooks-demo/`, plus the reading guide |
+| `hooks` | Product site refactored to `useContext`, `useReducer`, and `useMemo`, plus runnable demos in `hooks-demo/` |
 
 Switch to the hooks branch to run the demos:
 
@@ -28,6 +28,8 @@ npm run dev
 ```
 
 Open `/?demo=context` for the theme demo and `/?demo=reducer` for the event manager demo.
+
+The shop app on this branch is documented in [`app/README.md`](app/README.md).
 
 ## Requirements
 

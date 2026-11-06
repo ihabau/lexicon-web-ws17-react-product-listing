@@ -1,40 +1,18 @@
 import { Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
+import { useShop } from "../hooks/useShop.ts";
 
-type CartItem = {
-  title: string;
-  price: number;
-  image: string;
-  quantity: number;
-};
+const CartDrawer = () => {
+  const { state, dispatch, cartCount, cartTotal } = useShop();
+  const { cartItems, cartOpen } = state;
 
-interface CartDrawerProps {
-  items: CartItem[];
-  open: boolean;
-  onClose: () => void;
-  onRemove: (title: string) => void;
-  onChangeQuantity: (title: string, delta: number) => void;
-}
-
-const CartDrawer = ({
-  items,
-  open,
-  onClose,
-  onRemove,
-  onChangeQuantity,
-}: CartDrawerProps) => {
-  if (!open) return null;
-
-  const total = items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0,
-  );
+  if (!cartOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label="Shopping cart">
       <button
         type="button"
         aria-label="Close cart"
-        onClick={onClose}
+        onClick={() => dispatch({ type: "SET_CART_OPEN", payload: false })}
         className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
       />
 
@@ -46,12 +24,12 @@ const CartDrawer = ({
               Your cart
             </h2>
             <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-bold text-blue-700">
-              {items.reduce((sum, item) => sum + item.quantity, 0)}
+              {cartCount}
             </span>
           </div>
           <button
             type="button"
-            onClick={onClose}
+            onClick={() => dispatch({ type: "SET_CART_OPEN", payload: false })}
             aria-label="Close cart"
             className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900"
           >
@@ -60,7 +38,7 @@ const CartDrawer = ({
         </div>
 
         <div className="flex-1 overflow-y-auto px-5 py-4">
-          {items.length === 0 ? (
+          {cartItems.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center text-center">
               <div className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 text-slate-400">
                 <ShoppingBag size={28} />
@@ -74,7 +52,7 @@ const CartDrawer = ({
             </div>
           ) : (
             <ul className="space-y-4">
-              {items.map((item) => (
+              {cartItems.map((item) => (
                 <li key={item.title} className="flex gap-3">
                   <img
                     src={item.image}
@@ -93,7 +71,12 @@ const CartDrawer = ({
                       </div>
                       <button
                         type="button"
-                        onClick={() => onRemove(item.title)}
+                        onClick={() =>
+                          dispatch({
+                            type: "REMOVE_FROM_CART",
+                            payload: { title: item.title },
+                          })
+                        }
                         aria-label={`Remove ${item.title}`}
                         className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-rose-50 hover:text-rose-600"
                       >
@@ -105,7 +88,12 @@ const CartDrawer = ({
                       <div className="inline-flex items-center rounded-lg border border-slate-200">
                         <button
                           type="button"
-                          onClick={() => onChangeQuantity(item.title, -1)}
+                          onClick={() =>
+                            dispatch({
+                              type: "CHANGE_QUANTITY",
+                              payload: { title: item.title, delta: -1 },
+                            })
+                          }
                           aria-label={`Decrease ${item.title}`}
                           className="inline-flex h-8 w-8 items-center justify-center text-slate-500 hover:text-blue-600"
                         >
@@ -116,7 +104,12 @@ const CartDrawer = ({
                         </span>
                         <button
                           type="button"
-                          onClick={() => onChangeQuantity(item.title, 1)}
+                          onClick={() =>
+                            dispatch({
+                              type: "CHANGE_QUANTITY",
+                              payload: { title: item.title, delta: 1 },
+                            })
+                          }
                           aria-label={`Increase ${item.title}`}
                           className="inline-flex h-8 w-8 items-center justify-center text-slate-500 hover:text-blue-600"
                         >
@@ -138,12 +131,12 @@ const CartDrawer = ({
           <div className="flex items-center justify-between text-sm text-slate-600">
             <span>Total</span>
             <span className="text-lg font-black text-slate-900">
-              {total.toLocaleString("en-US")} kr
+              {cartTotal.toLocaleString("en-US")} kr
             </span>
           </div>
           <button
             type="button"
-            disabled={items.length === 0}
+            disabled={cartItems.length === 0}
             className="mt-3 w-full rounded-xl bg-slate-900 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-blue-600 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400"
           >
             Checkout

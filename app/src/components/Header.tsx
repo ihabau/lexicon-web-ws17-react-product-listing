@@ -1,26 +1,25 @@
 import { Menu, Package, Search, ShoppingCart, User } from "lucide-react";
+import { useShop } from "../hooks/useShop.ts";
 
-type NavItem = {
-  label: string;
-};
+const navItems = [
+  { label: "New Arrival" },
+  { label: "Men" },
+  { label: "Women" },
+  { label: "Sale" },
+];
 
-type HeaderProps = {
-  brand: string;
-  navItems: NavItem[];
-  cartCount: number;
-  selectedTag: string;
-  onTagChange: (tag: string) => void;
-  onCartClick: () => void;
-};
+const Header = () => {
+  const { state, dispatch, cartCount } = useShop();
+  const { selectedTag } = state;
 
-const Header = ({
-  brand,
-  navItems,
-  cartCount,
-  selectedTag,
-  onTagChange,
-  onCartClick,
-}: HeaderProps) => {
+  const handleTagChange = (tag: string) => {
+    dispatch({ type: "TOGGLE_TAG", payload: tag });
+  };
+
+  const handleCartClick = () => {
+    dispatch({ type: "SET_CART_OPEN", payload: true });
+  };
+
   return (
     <header className="sticky top-0 z-40 border-b border-blue-700/30 bg-blue-600 shadow-lg shadow-blue-900/10">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -33,7 +32,7 @@ const Header = ({
               <Package size={20} strokeWidth={2.5} />
             </span>
             <span className="text-xl font-black uppercase tracking-tighter">
-              {brand}
+              LITE.SHOP
             </span>
           </a>
 
@@ -42,7 +41,7 @@ const Header = ({
               <button
                 key={item.label}
                 type="button"
-                onClick={() => onTagChange(item.label)}
+                onClick={() => handleTagChange(item.label)}
                 aria-current={selectedTag === item.label ? "page" : undefined}
                 className={`relative transition-colors duration-200 ${
                   selectedTag === item.label
@@ -82,7 +81,7 @@ const Header = ({
 
             <button
               type="button"
-              onClick={onCartClick}
+              onClick={handleCartClick}
               className="relative inline-flex h-10 w-10 items-center justify-center rounded-[0.75rem] border border-blue-400/20 bg-blue-500/30 text-blue-50 transition-all duration-200 hover:bg-blue-500/50 hover:text-white"
               aria-label="Cart"
             >

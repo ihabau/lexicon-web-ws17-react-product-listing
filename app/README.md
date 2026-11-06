@@ -1,8 +1,9 @@
-# LITE.SHOP – React Workshop 1
+# LITE.SHOP - React Hooks
 
 A React + Vite + TypeScript implementation of the product listing layout in
 [`../index.html`](../index.html), styled with Tailwind CSS and icons from
-`lucide-react`.
+`lucide-react`. This version uses `useReducer`, `useContext`, and `useMemo`
+instead of passing all state through props.
 
 ## Run
 
@@ -13,67 +14,63 @@ npm run dev
 
 Production build: `npm run build`, lint: `npm run lint`.
 
+## Hooks
+
+| Hook | Where | Purpose |
+| :--- | :---- | :------ |
+| `useReducer` | `state/shopReducer.ts`, `context/ShopProvider.tsx` | Owns the filters, sort order, page, cart, and drawer state. |
+| `useContext` | `context/ShopContext.ts`, `hooks/useShop.ts` | Shares the shop state and `dispatch` with any component. |
+| `useMemo` | `context/ShopProvider.tsx`, `components/ProductGrid.tsx` | Caches the cart count, cart total, filtered products, sorted products, and visible page. |
+| `useState` | `components/Newsletter.tsx` | Keeps the email and submitted state local to the form. |
+
+## State
+
+`ShopState` in `state/shopReducer.ts` contains:
+
+- `selectedTag`, `selectedCategory`, `maxPrice`, `inStockOnly`, `onSaleOnly`
+- `sortBy`, `page`
+- `cartItems`, `cartOpen`
+
+The reducer handles these actions:
+
+`TOGGLE_TAG`, `SET_CATEGORY`, `SET_MAX_PRICE`, `SET_IN_STOCK_ONLY`,
+`SET_ON_SALE_ONLY`, `SET_SORT`, `SET_PAGE`, `ADD_TO_CART`, `REMOVE_FROM_CART`,
+`CHANGE_QUANTITY`, `SET_CART_OPEN`, `RESET_FILTERS`.
+
+Filter actions reset `page` to `1`, so the grid never stays on a page that no
+longer exists after a filter changes.
+
 ## Components
 
 | Component | Purpose |
 | :--- | :--- |
-| `App` | Page shell. Holds the nav links and composes the other components. |
-| `Header` | Top navigation bar with brand, nav links and cart count. |
-| `FiltersSidebar` | Left sidebar with Categories, Price Range, Availability and the Summer Sale promo. |
-| `ProductGrid` | Section heading, sort dropdown, product grid and pagination. Owns the product data and current page. |
-| `ProductCard` | Single product card with image, badge, favorite, rating, price and cart action. |
-| `Pagination` | Page navigation below the grid with previous/next and numbered buttons. |
-| `Newsletter` | Dark "Join the LITE.CLUB" section with the email form. |
-| `CartDrawer` | Slide-in cart panel with quantities, removal, total and checkout. |
-| `Footer` | Link columns and copyright at the bottom of the page. |
+| `App` | Wraps the page in `ShopProvider` and composes the other components. |
+| `Header` | Top navigation bar. Reads the active tag and cart count from `useShop()` and dispatches tag and drawer actions. |
+| `FiltersSidebar` | Left sidebar with Categories, Price Range, Availability, and the Summer Sale promo. Reads filters from `useShop()` and dispatches changes. |
+| `ProductGrid` | Section heading, sort dropdown, product grid, and pagination. Reads filters from `useShop()`, derives the visible products with `useMemo`, and dispatches cart actions. |
+| `ProductCard` | Single product card with image, badge, favorite, rating, price, and cart action. Still receives its display data through props. |
+| `Pagination` | Page navigation below the grid. Still receives `totalPages`, `currentPage`, and `onPageChange` through props. |
+| `Newsletter` | Dark "Join the LITE.CLUB" section with a local email form. |
+| `CartDrawer` | Slide-in cart panel. Reads items, open state, count, and total from `useShop()` and dispatches remove and quantity actions. |
+| `Footer` | Link columns and copyright. Reads the active tag from `useShop()` and dispatches tag changes. |
 
-## Props
+## Data flow
 
-- `Header` — `brand: string`, `navItems: NavItem[]`, `cartCount: number`,
-  `selectedTag: string`, `onTagChange: (tag: string) => void`,
-  `onCartClick: () => void`.
-- `FiltersSidebar` — `selectedCategory: string`,
-  `onCategoryChange: (category: string) => void`, `maxPrice: number`,
-  `onMaxPriceChange: (value: number) => void`, `inStockOnly: boolean`,
-  `onInStockChange: (value: boolean) => void`, `onSaleOnly: boolean`,
-  `onOnSaleChange: (value: boolean) => void`.
-- `ProductGrid` — `selectedTag: string`, `selectedCategory: string`,
-  `maxPrice: number`, `inStockOnly: boolean`, `onSaleOnly: boolean`,
-  `sortBy: string`, `onSortChange: (value: string) => void`,
-  `onAddToCart: (product: CartProduct) => void`.
-- `ProductCard` — `title`, `category`, `price`, `oldPrice?`, `rating`, `image`,
-  `badge`, `badgeTone`, `stock`, `available`, `onAddToCart: () => void`.
-- `Pagination` — `totalPages: number`, `currentPage: number`,
-  `onPageChange: (page: number) => void`.
-- `CartDrawer` — `items: CartItem[]`, `open: boolean`, `onClose`,
-  `onRemove: (title: string) => void`,
-  `onChangeQuantity: (title: string, delta: number) => void`.
-- `Footer` — `selectedTag: string`, `onTagChange: (tag: string) => void`.
+`ShopProvider` creates one reducer state and exposes it through `ShopContext`.
+`useShop()` reads that context and throws a clear error if a component is
+rendered outside the provider. `Header`, `FiltersSidebar`, `Footer`, and
+`CartDrawer` read and update the shared state without receiving shop props.
 
-`NavItem` is declared next to `Header`, `ProductCardProps` next to
-`ProductCard`, and the cart types next to `App` and `CartDrawer`, so each
-component owns the types it needs.
+`ProductGrid` uses the filter state from the context to compute the filtered
+products, sorts them, and slices the current page. All three derived lists are
+wrapped in `useMemo` so they only recalculate when their inputs change.
+`ProductCard` and `Pagination` stay presentational: they receive the data they
+render and report user actions through callbacks.
 
-## Why props
+## Why hooks
 
-The components are meant to be reusable, so they only know about the data they
-render. `Header` receives the brand, links, active tag, cart count and callbacks
-from `App` instead of hard-coding them. `FiltersSidebar` receives the selected
-category, price and availability values plus change callbacks, so the sidebar
-only displays and reports filters. `ProductCard` receives all of its display
-data plus an `onAddToCart` callback, which lets `ProductGrid` render any list of
-products with `.map()`. `Pagination` receives the current page and a callback,
-so page state stays in `ProductGrid` and the component just reports what the
-user clicked. `CartDrawer` receives the cart items and callbacks for closing,
-removing and changing quantities, so all cart state stays in `App`.
-
-## How it fits together
-
-`App` owns the nav links, the active tag, the category/price/availability
-filters, the sort order and the cart. It renders `Header`, then a 12-column grid
-where `FiltersSidebar` takes 3 columns and `ProductGrid` takes 9. The navbar
-tags filter the products, while the sidebar filters by product category, price
-and availability. `ProductGrid` applies those filters, sorts the result, maps
-each visible product to a `ProductCard`, and renders `Pagination` underneath.
-`ProductCard` reports add-to-cart clicks up to `App`, which updates the cart and
-opens `CartDrawer`. `Newsletter` and `Footer` close the page.
+The shop state is shared by several parts of the page. Passing the cart and
+every filter callback through `App`, the layout, and the sidebar would create
+prop drilling. The context keeps the state in one place, and the reducer keeps
+every state transition explicit and testable. `useMemo` avoids repeating the
+filter, sort, and cart total work on unrelated renders.

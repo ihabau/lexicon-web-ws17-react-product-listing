@@ -1,13 +1,4 @@
-interface FiltersSidebarProps {
-  selectedCategory: string;
-  onCategoryChange: (category: string) => void;
-  maxPrice: number;
-  onMaxPriceChange: (value: number) => void;
-  inStockOnly: boolean;
-  onInStockChange: (value: boolean) => void;
-  onSaleOnly: boolean;
-  onOnSaleChange: (value: boolean) => void;
-}
+import { useShop } from "../hooks/useShop.ts";
 
 const categories = [
   { name: "All Products", count: 6 },
@@ -16,16 +7,10 @@ const categories = [
   { name: "Accessories", count: 3 },
 ];
 
-const FiltersSidebar = ({
-  selectedCategory,
-  onCategoryChange,
-  maxPrice,
-  onMaxPriceChange,
-  inStockOnly,
-  onInStockChange,
-  onSaleOnly,
-  onOnSaleChange,
-}: FiltersSidebarProps) => {
+const FiltersSidebar = () => {
+  const { state, dispatch } = useShop();
+  const { selectedCategory, maxPrice, inStockOnly, onSaleOnly } = state;
+
   return (
     <aside className="lg:col-span-3 lg:sticky lg:top-20 self-start">
       <div className="border border-slate-200 rounded-[1.25rem] bg-slate-50/50 backdrop-blur-sm shadow-sm transition-all duration-300 hover:shadow-xl hover:border-blue-400 p-5">
@@ -43,7 +28,12 @@ const FiltersSidebar = ({
                 <input
                   type="checkbox"
                   checked={selectedCategory === category.name}
-                  onChange={() => onCategoryChange(category.name)}
+                  onChange={() =>
+                    dispatch({
+                      type: "SET_CATEGORY",
+                      payload: category.name,
+                    })
+                  }
                   className="h-[1.125rem] w-[1.125rem] rounded-[0.375rem] border border-slate-200 accent-blue-600 cursor-pointer"
                 />
                 <span className="flex-1 text-sm text-slate-700">
@@ -75,7 +65,12 @@ const FiltersSidebar = ({
             max="2000"
             step="50"
             value={maxPrice}
-            onChange={(event) => onMaxPriceChange(Number(event.target.value))}
+            onChange={(event) =>
+              dispatch({
+                type: "SET_MAX_PRICE",
+                payload: Number(event.target.value),
+              })
+            }
             className="w-full accent-blue-500"
             aria-label="Price range"
           />
@@ -93,7 +88,12 @@ const FiltersSidebar = ({
               <input
                 type="checkbox"
                 checked={inStockOnly}
-                onChange={(event) => onInStockChange(event.target.checked)}
+                onChange={(event) =>
+                  dispatch({
+                    type: "SET_IN_STOCK_ONLY",
+                    payload: event.target.checked,
+                  })
+                }
                 className="h-[1.125rem] w-[1.125rem] rounded-[0.375rem] border border-slate-200 accent-blue-600 cursor-pointer"
               />
               <span className="flex-1 text-sm text-slate-700">In Stock</span>
@@ -103,7 +103,12 @@ const FiltersSidebar = ({
               <input
                 type="checkbox"
                 checked={onSaleOnly}
-                onChange={(event) => onOnSaleChange(event.target.checked)}
+                onChange={(event) =>
+                  dispatch({
+                    type: "SET_ON_SALE_ONLY",
+                    payload: event.target.checked,
+                  })
+                }
                 className="h-[1.125rem] w-[1.125rem] rounded-[0.375rem] border border-slate-200 accent-blue-600 cursor-pointer"
               />
               <span className="flex-1 text-sm text-slate-700">On Sale</span>
